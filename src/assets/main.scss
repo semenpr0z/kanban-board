@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap");
+@import "bootstrap/scss/bootstrap";
+
+
+:root {
+  --White: #ffff;
+  --darkBlue: #0067a3;
+  --lightBlue: #0079bf;
+  --Red: #ff0000;
+}
+
+* {
+  font-family: "Geologica", sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  // max-width: 1235px;
+}
+
+.logotype {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+}
+
+.button {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+
+  &_mini {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+.h {
+  &-1 {
+  }
+  &-2 {
+  }
+}
+
+.p {
+  &-1 {
+  }
+  &-2 {
+  }
+}
+
+.span {
+  &-1 {
+  }
+  &-2 {
+    font-weight: 400;
+  }
+}
