@@ -3,6 +3,7 @@ import Table from "@/Views/Table/Table.vue";
 import Profile from "@/Views/Profile/Profile.vue";
 import Page404 from "@/Views/Page404/Page404.vue";
 import Auth from "@/Views/Auth/AuthPage.vue";
+import Translater from '@/Views/Translater/Translater.vue'
 import { useUserStore } from "@/stores/userStore.js";
 
 const router = createRouter({
@@ -42,6 +43,11 @@ const router = createRouter({
         }
       },
     },
+    // {
+    //   path: '/translate',
+    //   name: 'translater',
+    //   component: Translater
+    // }
   ],
 });
 

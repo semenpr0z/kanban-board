@@ -60,6 +60,7 @@ export default {
         display: flex;
 
         .data-wrapper{
+            min-width: 280px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -73,5 +74,15 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media (max-width: 350px) {
+    .profile-info{
+        .profile-wrapper{
+            .data-wrapper{
+                min-width: 100%;
+            }
+        }
+    }
 }
 </style>

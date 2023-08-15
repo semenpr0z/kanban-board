@@ -111,12 +111,22 @@ export const useUserStore = defineStore("userStore", {
         }
       });
     },
+    async checkPassword(password) {
+      const email = this.user.email;
+      // console.log({ email: email, password: password });
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        return true
+      } catch (error) {
+        return false
+      }
+    },
     async sendEmailVerification() {
       const user = auth.currentUser;
 
       try {
         await sendEmailVerification(user);
-        console.log("Письмо с подтверждением электронной почты отправлено");
+        // console.log("Письмо с подтверждением электронной почты отправлено");
         this.userAlerts.push({
           header: "Подтверждение отправлено",
           mainText: "Пожалуйста, проверьте свою электронную почту",

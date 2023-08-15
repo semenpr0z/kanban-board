@@ -50,4 +50,14 @@ export default {
         color: var(--White);
     }
 }
+
+
+@media (max-width: 500px) {
+    .header{
+        justify-content: flex-end;
+        .link{
+            display: none;
+        }
+    }
+}
 </style>
