@@ -19,9 +19,11 @@ export const useUserStore = defineStore("userStore", {
     userInfoPending: false,
     userAlerts: [],
     verificationInProgress: false,
+    userAuthPending: false
   }),
   actions: {
     async logIn(user) {
+      this.userAuthPending = true
       const { email, password } = user;
 
       try {
@@ -37,6 +39,7 @@ export const useUserStore = defineStore("userStore", {
           default:
             alert(error.massage);
         }
+        this.userAuthPending = false
         return;
       }
 
@@ -45,9 +48,11 @@ export const useUserStore = defineStore("userStore", {
 
       localStorage.setItem("user", JSON.stringify(this.user));
 
+      this.userAuthPending = false
       router.push("/");
     },
     async register(user) {
+      this.userAuthPending = true
       const { name, email, password } = user;
 
       try {
@@ -68,7 +73,7 @@ export const useUserStore = defineStore("userStore", {
         console.log("Пользователь успешно зарегистрирован и имя сохранено");
         this.user = auth.currentUser;
         localStorage.setItem("user", JSON.stringify(this.user));
-
+        this.userAuthPending = false;
         router.push("/");
       } catch (error) {
         switch (error.code) {
@@ -87,7 +92,9 @@ export const useUserStore = defineStore("userStore", {
           default:
             alert(error.massage);
         }
+        this.userAuthPending = false;
         return;
+
       }
     },
     async clearUser() {

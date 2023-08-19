@@ -67,9 +67,12 @@ export default {
         <div class="form-group">
             <label for="password">Пароль</label>
             <input type="password" class="form-control" id="password" placeholder="qwerty" v-model="data.password"
-                 :class="{ 'is-invalid': !validPassword && passwordInputTouched }">
+                :class="{ 'is-invalid': !validPassword && passwordInputTouched }">
         </div>
-        <button type="submit" class="btn btn-success" @click="logIn" :disabled="validLogInForm">Войти</button>
+        <button type="submit" class="btn btn-success" @click="logIn" :disabled="validLogInForm">
+            <span>Войти</span>
+            <span v-if="userStore.userAuthPending" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
     </div>
 </template>
 
@@ -90,6 +93,13 @@ export default {
             bottom: 0;
             position: absolute;
         }
+    }
+
+    .btn{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
     }
 }
 </style>

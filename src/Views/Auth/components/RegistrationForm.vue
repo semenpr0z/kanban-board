@@ -120,8 +120,11 @@ export default {
                 Я согласен на обработку своих персональных данных
             </label>
         </div>
-        <button type="submit" class="btn btn-success" @click="createUser"
-            :disabled="!validRegistrationForm">Зарегистрироваться</button>
+        <button type="submit" class="btn btn-success" @click="createUser" :disabled="!validRegistrationForm">
+            <span>Зарегистрироваться</span>
+            <span v-if="userStore.userAuthPending" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+        </button>
     </div>
 </template>
 
@@ -134,6 +137,13 @@ export default {
     .form-group {
         display: flex;
         flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn{
+        display: flex;
+        align-items: center;
+        justify-content: center;
         gap: 5px;
     }
 }
