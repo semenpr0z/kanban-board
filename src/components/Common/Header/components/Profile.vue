@@ -46,6 +46,7 @@ export default {
         </svg>
         <div :class="['profile__modal', { 'profile__modal_opened': opened }]">
             <router-link to="/profile" class="span-2 text">Profile</router-link>
+            <router-link to="/settings" class="span-2 text">Settings</router-link>
             <span class="span-2" @click="userStore.clearUser()">Log out</span>
         </div>
     </div>
@@ -100,10 +101,10 @@ export default {
 
         &_opened {
             padding: 8px 7px;
-            bottom: -71px;
+            bottom: -95px;
             right: 0;
             width: 134px;
-            height: 60px;
+            height: 90px;
         }
         .text{
             text-decoration: none;

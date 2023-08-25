@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-    <div v-if="!userStore.userInfoPending" class="profile-info border rounded bg-white">
+    <div v-if="!userStore.userInfoPending" class="profile-info">
         <h1>Профиль</h1>
         <!-- <div class="row-text">
             <span class="p-1 text">Имя: </span>
