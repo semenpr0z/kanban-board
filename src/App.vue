@@ -23,18 +23,24 @@ export default {
       settingsStore,
     };
   },
+  computed: {
+    colorTheme() {
+      if (this.settingsStore.colorTheme) {
+        return "dark-theme";
+      } else {
+        return "light-theme";
+      }
+    },
+  },
 };
 </script>
 
 <template>
-  <div>
+  <div :class="colorTheme">
     <Header />
     <Alerts />
-    <main :class="{ dark: settingsStore.colorTheme }">
-      <div
-        class="container rounded"
-        :class="{ 'dark-container': settingsStore.colorTheme }"
-      >
+    <main class="main">
+      <div class="container rounded">
         <router-view></router-view>
       </div>
     </main>
@@ -45,18 +51,20 @@ export default {
 <style lang="scss">
 @import "@/assets/main.scss";
 
-main {
+.main {
   width: 100%;
   height: 100%;
   min-height: calc(100vh - 40px);
-  background-color: var(--lightBlue);
+  background-color: var(--bgColor);
   transition: background-color 0.3s ease;
   padding-top: 25px;
+  color: var(--textColor);
 
   .container {
     position: relative;
-    background-color: var(--White);
+    background-color: var(--containerColor);
     transition: background-color 0.3s ease;
+    height: 100%;
   }
 }
 

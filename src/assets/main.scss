@@ -10,6 +10,28 @@
   --Red: #ff0000;
 }
 
+.light-theme{
+  --bgColor: #0079bf;
+  --textColor: #000000;
+  --alternativeTextColor: #FFFF;
+  --headerColor: #0067a3;
+  --containerColor: #FFFF;
+  --columnColor: #e9ecef;
+  --borderColor: #ced4da;
+  --transparentHover: #302f2f10;
+}
+
+.dark-theme{
+  --bgColor: #6c757d;
+  --textColor: #FFFF;
+  --alternativeTextColor: #000000;
+  --headerColor: #343a40;
+  --containerColor: #212529;
+  --columnColor: #2b2f32;
+  --borderColor: #343a40;
+  --transparentHover: #ffffff33;
+}
+
 * {
   font-family: "Geologica", sans-serif;
 }

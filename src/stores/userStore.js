@@ -19,7 +19,44 @@ export const useUserStore = defineStore("userStore", {
     userInfoPending: false,
     userAlerts: [],
     verificationInProgress: false,
-    userAuthPending: false
+    userAuthPending: false,
+    notifications: [
+      {
+        headerText: 'Паша',
+        mainText: 'Работай гнида',
+        creationTime: new Date(),
+        id: 1,
+        checked: false
+      },
+      {
+        headerText: 'Jhon Connor',
+        mainText: 'Terminator is comming!',
+        creationTime: new Date('2023-08-28T12:34:56.789Z'),
+        id: 2,
+        checked: false
+      },
+      {
+        headerText: 'Jhon Connor',
+        mainText: 'Terminator is comming!',
+        creationTime: new Date('2023-08-27T12:34:56.789Z'),
+        id: 3,
+        checked: false
+      },
+      {
+        headerText: 'Jhon Connor',
+        mainText: 'Terminator is comming!',
+        creationTime: new Date('2023-08-26T12:34:56.789Z'),
+        id: 4,
+        checked: false
+      },
+      {
+        headerText: 'Jhon Connor',
+        mainText: 'Terminator is comming!',
+        creationTime: new Date('2023-08-23T12:34:56.789Z'),
+        id: 5,
+        checked: false
+      }
+    ]
   }),
   actions: {
     async logIn(user) {

@@ -1,8 +1,8 @@
 <script>
 import Profile from "./components/Profile.vue";
 import AuthButton from "./components/AuthButton.vue";
+import Notification from "./components/Notification.vue";
 import { useUserStore } from "@/stores/userStore.js";
-import { useSettingsStore } from "@/stores/settingsStore.js";
 
 import router from "@/router.js";
 
@@ -10,14 +10,12 @@ export default {
   data() {
     return {};
   },
-  components: { Profile, AuthButton },
+  components: { Profile, AuthButton, Notification },
   setup() {
     const userStore = useUserStore();
-    const settingsStore = useSettingsStore();
 
     return {
       userStore,
-      settingsStore,
     };
   },
   methods: {
@@ -29,25 +27,33 @@ export default {
 </script>
 
 <template>
-  <header class="header" :class="{'dark': settingsStore.colorTheme}" >
+  <header class="header">
     <router-link to="/" class="link"
       ><span class="logotype">Kanban Board</span></router-link
     >
-    <Profile v-if="userStore.user" />
-    <AuthButton v-else @click="openAuth" />
+    <div class="wrapper">
+      <Notification v-if="userStore.user" />
+      <Profile v-if="userStore.user" />
+      <AuthButton v-else @click="openAuth" />
+    </div>
   </header>
 </template>
 
 <style lang="scss" scoped>
 .header {
   padding: 7px 16px;
-  background-color: var(--darkBlue);
+  background-color: var(--headerColor);
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 40px;
   transition: background-color 0.3s ease;
 
+  .wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
   .link {
     text-decoration: none;
   }
@@ -56,9 +62,6 @@ export default {
   }
 }
 
-.dark{
-  background-color: var(--bs-gray-800);
-}
 
 @media (max-width: 500px) {
   .header {
