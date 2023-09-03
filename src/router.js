@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Table from "@/Views/Table/Table.vue";
+import MainPage from "@/Views/MainPage/MainPage.vue";
+import Workspace from "@/Views/Workspace/Workspace.vue";
 import Profile from "@/Views/Profile/Profile.vue";
 import Page404 from "@/Views/Page404/Page404.vue";
 import Auth from "@/Views/Auth/AuthPage.vue";
-import Settings from '@/Views/Settings/Settings.vue';
+import Settings from "@/Views/Settings/Settings.vue";
 // import Translater from '@/Views/Translater/Translater.vue'
 import { useUserStore } from "@/stores/userStore.js";
 
@@ -12,8 +13,15 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "Table",
-      component: Table,
+      name: "Главная",
+      component: MainPage,
+      meta: { showInNav: true },
+    },
+    {
+      path: "/workspace",
+      name: "Рабочее пространство",
+      component: Workspace,
+      meta: { showInNav: true },
     },
     {
       path: "/profile",
@@ -22,11 +30,13 @@ const router = createRouter({
       children: {
         path: "/",
       },
+      meta: { showInNav: false },
     },
     {
       path: "/:pathMatch(.*)*",
       name: "404",
       component: Page404,
+      meta: { showInNav: false },
     },
     {
       path: "/auth",
@@ -43,12 +53,14 @@ const router = createRouter({
           next();
         }
       },
+      meta: { showInNav: false },
     },
     {
-      path:"/settings",
-      name: 'Settings',
-      component: Settings
-    }
+      path: "/settings",
+      name: "Settings",
+      component: Settings,
+      meta: { showInNav: false },
+    },
     // {
     //   path: '/translate',
     //   name: 'translater',

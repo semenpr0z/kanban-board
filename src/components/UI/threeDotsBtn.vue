@@ -20,7 +20,6 @@ export default {
         { standart: size === 'standart' },
         { big: size === 'big' },
       ]"
-      fill="currentColor"
       class="bi bi-three-dots"
       viewBox="0 0 16 16"
     >
@@ -49,6 +48,7 @@ export default {
   svg {
     height: 100%;
     width: auto;
+    fill: var(--textColor);
   }
 
   .mini{

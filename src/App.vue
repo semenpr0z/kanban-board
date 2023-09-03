@@ -8,7 +8,13 @@ import { useSettingsStore } from "@/stores/settingsStore.js";
 import Alerts from "./components/UI/Alerts.vue";
 export default {
   data() {
-    return {};
+    return {
+      settings: {
+        suppressScrollY: false,
+        suppressScrollX: false,
+        wheelPropagation: false
+      }
+    };
   },
   components: { Header, Footer, Alerts },
   setup() {
@@ -40,9 +46,9 @@ export default {
     <Header />
     <Alerts />
     <main class="main">
-      <div class="container rounded">
-        <router-view></router-view>
-      </div>
+        <div class="container rounded">
+          <router-view></router-view>
+        </div>
     </main>
     <Footer />
   </div>
@@ -54,22 +60,30 @@ export default {
 .main {
   width: 100%;
   height: 100%;
-  min-height: calc(100vh - 40px);
+  min-height: calc(100vh - 50px);
+  max-height: calc(100vh - 50px);
   background-color: var(--bgColor);
   transition: background-color 0.3s ease;
-  padding-top: 25px;
+  padding: 25px 0;
   color: var(--textColor);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 
   .container {
     position: relative;
     background-color: var(--containerColor);
     transition: background-color 0.3s ease;
-    height: 100%;
+    padding: 12px;
+    flex-grow: 1;
+    display: flex;
+    overflow: auto;
   }
 }
 
 .dark {
   background-color: var(--bs-gray-600);
+
   &-container {
     color: var(--White) !important;
     background-color: var(--bs-gray-900) !important;

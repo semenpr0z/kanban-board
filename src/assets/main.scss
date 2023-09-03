@@ -2,6 +2,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap");
 @import "bootstrap/scss/bootstrap";
 
+@import '@/assets/scrollbar.scss';
+
 
 :root {
   --White: #ffff;
@@ -13,6 +15,7 @@
 .light-theme{
   --bgColor: #0079bf;
   --textColor: #000000;
+  --headerTextColor: #FFFF;
   --alternativeTextColor: #FFFF;
   --headerColor: #0067a3;
   --containerColor: #FFFF;
@@ -24,6 +27,7 @@
 .dark-theme{
   --bgColor: #6c757d;
   --textColor: #FFFF;
+  --headerTextColor: #FFFF;
   --alternativeTextColor: #000000;
   --headerColor: #343a40;
   --containerColor: #212529;
