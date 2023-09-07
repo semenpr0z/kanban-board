@@ -1,6 +1,7 @@
 <script>
 import Task from "./Task.vue";
 import threeDotBtn from "@/components/UI/threeDotsBtn.vue";
+import Modal from "@/components/UI/Modal.vue";
 
 import { useTasksStore } from "@/stores/tasksStore.js";
 
@@ -18,6 +19,7 @@ export default {
   components: {
     Task,
     threeDotBtn,
+    Modal,
   },
   props: {
     column: {
@@ -56,12 +58,12 @@ export default {
     startStopRenameColumn() {
       this.cloneNameColumn = this.column.headerName;
       this.renamingColumn = !this.renamingColumn;
-      console.log(this.cloneNameColumn)
+      console.log(this.cloneNameColumn);
     },
     renameColumn(e) {
-      e.preventDefault()
-      console.log('ok')
-      console.log(!this.cloneNameColumn.length)
+      e.preventDefault();
+      console.log("ok");
+      console.log(!this.cloneNameColumn.length);
       if (!this.cloneNameColumn.length) {
         this.invalidInput = true;
       } else {
@@ -97,7 +99,11 @@ export default {
           aria-label="Close"
           @click="startStopRenameColumn"
         ></button>
-        <button class="btn btn-sm btn-primary" type="submit" @click="renameColumn">
+        <button
+          class="btn btn-sm btn-primary"
+          type="submit"
+          @click="renameColumn"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -134,13 +140,19 @@ export default {
             </button>
           </li>
           <li>
-            <button type="button" class="dropdown-item">Удалить колонку</button>
+            <button
+              type="button"
+              class="dropdown-item"
+              @click="tasksStore.confirmationOfDeletingFunction(column.id)"
+            >
+              Удалить колонку
+            </button>
           </li>
         </ul>
       </div>
     </header>
     <ul class="column__list">
-      <Task v-for="task in column.tasks" :task="task" />
+        <Task v-for="task in column.tasks" :task="task" />
     </ul>
     <button
       class="column__add-btn btn btn-sm"

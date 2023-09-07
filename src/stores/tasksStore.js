@@ -15,6 +15,8 @@ function saveToCache(data) {
 export const useTasksStore = defineStore("tasksStore", {
   state: () => ({
     profileTasks: loadFromCache(), // Загрузка данных из кэша при создании хранилища
+    confirmationOfDeleting: false,
+    idOfColumnForDelete: ''
   }),
   actions: {
     createTask(columnId, taskName) {
@@ -35,14 +37,47 @@ export const useTasksStore = defineStore("tasksStore", {
       console.log(this.profileTasks);
       saveToCache(this.profileTasks); // Сохранение данных в кэш после изменения
     },
-    renameColumn(columnId, newColumnName){
+    renameColumn(columnId, newColumnName) {
       const column = this.profileTasks.find((column) => column.id === columnId);
 
       if (column) {
         column.headerName = newColumnName;
         saveToCache(this.profileTasks);
       }
-    }
+    },
+    confirmationOfDeletingFunction(columnId){
+      this.confirmationOfDeleting = !this.confirmationOfDeleting
+      if(!this.confirmationOfDeleting){
+        this.idOfColumnForDelete = ''
+      }else{
+        this.idOfColumnForDelete = columnId
+      }
+    },
+    deleteColumn() {
+      const columnIndex = this.profileTasks.findIndex(
+        (column) => column.id === this.idOfColumnForDelete
+      );
+
+      if (columnIndex !== -1) {
+        // Проверяем, что есть хотя бы две колонки
+        if (this.profileTasks.length > 1) {
+          // Если есть предыдущая колонка, переносим задачи в нее
+          if (columnIndex > 0) {
+            const previousColumn = this.profileTasks[columnIndex - 1];
+            previousColumn.tasks = previousColumn.tasks.concat(
+              this.profileTasks[columnIndex].tasks
+            );
+          }
+          // Удаляем колонку
+          this.profileTasks.splice(columnIndex, 1);
+          saveToCache(this.profileTasks); // Сохраняем изменения в кэше
+          this.confirmationOfDeletingFunction();
+        } else {
+          // Если есть только одна колонка, не удаляем ее
+          console.warn("Нельзя удалить последнюю колонку.");
+        }
+      }
+    },
   },
 });
 
