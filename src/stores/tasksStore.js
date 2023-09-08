@@ -16,14 +16,14 @@ export const useTasksStore = defineStore("tasksStore", {
   state: () => ({
     profileTasks: loadFromCache(), // Загрузка данных из кэша при создании хранилища
     confirmationOfDeleting: false,
-    idOfColumnForDelete: ''
+    idOfColumnForDelete: "",
   }),
   actions: {
     createTask(columnId, taskName) {
       const column = this.profileTasks.find((column) => column.id === columnId);
 
       if (column) {
-        const newTask = { name: taskName, text: "" };
+        const newTask = { name: taskName, text: "", id: uuidv4() };
         column.tasks.push(newTask);
         saveToCache(this.profileTasks); // Сохранение данных в кэш после изменения
       }
@@ -45,12 +45,12 @@ export const useTasksStore = defineStore("tasksStore", {
         saveToCache(this.profileTasks);
       }
     },
-    confirmationOfDeletingFunction(columnId){
-      this.confirmationOfDeleting = !this.confirmationOfDeleting
-      if(!this.confirmationOfDeleting){
-        this.idOfColumnForDelete = ''
-      }else{
-        this.idOfColumnForDelete = columnId
+    confirmationOfDeletingFunction(columnId) {
+      this.confirmationOfDeleting = !this.confirmationOfDeleting;
+      if (!this.confirmationOfDeleting) {
+        this.idOfColumnForDelete = "";
+      } else {
+        this.idOfColumnForDelete = columnId;
       }
     },
     deleteColumn() {
@@ -103,3 +103,30 @@ export const useTasksStore = defineStore("tasksStore", {
 //     tasks: [],
 //   },
 // ],
+
+// [
+//   {
+//     headerName: "1 этап",
+//     id: uuidv4(),
+//     tasksId: ["sadasasdsad", "sasdasadsad"],
+//   },
+//   {
+//     headerName: "2 этап",
+//     id: uuidv4(),
+//     tasksId: ["sadasasdsad", "sasdasadsad", "sasdasasssdsad"],
+//   },
+// ]
+// [
+//   {
+//     taskName: "Задача 1",
+//     id: uuidv4(),
+//     text: "ssss",
+//     columPriority: 1
+//   },
+//   {
+//     taskName: "Задача 1",
+//     id: uuidv4(),
+//     text: "ssss",
+//     columPriority: 2
+//   }
+// ];

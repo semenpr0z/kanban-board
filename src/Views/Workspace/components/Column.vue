@@ -5,6 +5,8 @@ import Modal from "@/components/UI/Modal.vue";
 
 import { useTasksStore } from "@/stores/tasksStore.js";
 
+import draggable from "vuedraggable";
+
 export default {
   data() {
     return {
@@ -20,6 +22,7 @@ export default {
     Task,
     threeDotBtn,
     Modal,
+    draggable,
   },
   props: {
     column: {
@@ -71,6 +74,19 @@ export default {
         this.startStopRenameColumn();
       }
     },
+    startDrag(event, item){
+      console.log(item)
+      event.dataTransfer.dropEffect = 'move';
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('itemID', item.id)
+      event.dataTransfer.setData('columnID', this.column.id)
+    },
+    onDrop(event){
+      const itemID = event.dataTransfer.getData('itemID');
+      const columnID = event.dataTransfer.getData('columnID');
+      const item = this.tasksStore.profileTasks[columnID].tasks.find((item => item.id === itemID))
+      console.log(item)
+    }
   },
   watch: {
     taskName() {
@@ -84,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <div class="column rounded shadow-sm">
+  <div class="column rounded shadow-sm" >
     <header class="column__header">
       <h6 v-if="!renamingColumn">{{ column.headerName }}</h6>
       <form class="renaming" @submit.prevent v-else>
@@ -151,9 +167,11 @@ export default {
         </ul>
       </div>
     </header>
+
     <ul class="column__list">
-        <Task v-for="task in column.tasks" :task="task" />
+      <Task v-for="task in column.tasks" :task="task" draggable="true" @dragstart="startDrag($event, task)" @drop="onDrop($event)"/>
     </ul>
+
     <button
       class="column__add-btn btn btn-sm"
       @click="startStopCreationTask"

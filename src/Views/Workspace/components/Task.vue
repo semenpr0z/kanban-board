@@ -5,7 +5,8 @@ export default {
             type: Object,
             default: {
                 name: '',
-                text: ''
+                text: '',
+                id: 0
             }
         }
     }
@@ -13,7 +14,7 @@ export default {
 </script>
 
 <template>
-    <li class="task rounded shadow-sm" :title="'Задача: ' + task.name">
+    <li class="task rounded shadow-sm" :title="'Задача: ' + task.name" >
         <div class="task__header">
             <span>{{ task.name }}</span>
             <button class="btn task__btn-change" title="Изменить">
