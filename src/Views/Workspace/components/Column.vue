@@ -5,8 +5,6 @@ import Modal from "@/components/UI/Modal.vue";
 
 import { useTasksStore } from "@/stores/tasksStore.js";
 
-import draggable from "vuedraggable";
-
 export default {
   data() {
     return {
@@ -16,13 +14,17 @@ export default {
       invalidInput: false,
       renamingColumn: false,
       cloneNameColumn: "",
+      taskIdForDrugging: null,
+      taskCoordinats: {
+        posX: 0,
+        posY: 0,
+      }
     };
   },
   components: {
     Task,
     threeDotBtn,
     Modal,
-    draggable,
   },
   props: {
     column: {
@@ -37,6 +39,10 @@ export default {
       type: String,
       required: true,
     },
+    coordinats: {
+      type: Object,
+      required: false
+    }
   },
   setup() {
     const tasksStore = useTasksStore();
@@ -65,7 +71,6 @@ export default {
     },
     renameColumn(e) {
       e.preventDefault();
-      console.log("ok");
       console.log(!this.cloneNameColumn.length);
       if (!this.cloneNameColumn.length) {
         this.invalidInput = true;
@@ -74,19 +79,28 @@ export default {
         this.startStopRenameColumn();
       }
     },
-    startDrag(event, item){
-      console.log(item)
+    startDrag(event, item) {
       event.dataTransfer.dropEffect = 'move';
       event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('itemID', item.id)
-      event.dataTransfer.setData('columnID', this.column.id)
+      this.taskIdForDrugging = item.id
+      
+
+      this.tasksStore.startDragAndDropTask(item, this.column.id)
+
     },
-    onDrop(event){
-      const itemID = event.dataTransfer.getData('itemID');
-      const columnID = event.dataTransfer.getData('columnID');
-      const item = this.tasksStore.profileTasks[columnID].tasks.find((item => item.id === itemID))
-      console.log(item)
-    }
+    onDrop(event) {
+      event.preventDefault()
+      const itemReceived = this.tasksStore.draggableTask
+      this.tasksStore.endDragAndDropTask(this.column.id)
+      // console.log(itemReceived)
+      // console.log(this.column.id)
+
+    },
+    dragOver(event) {
+      event.preventDefault()
+      // console.log('я над элементом')
+
+    },
   },
   watch: {
     taskName() {
@@ -100,67 +114,31 @@ export default {
 </script>
 
 <template>
-  <div class="column rounded shadow-sm" >
+  <div class="column rounded shadow-sm" @dragover="dragOver" @drop="onDrop($event)">
     <header class="column__header">
       <h6 v-if="!renamingColumn">{{ column.headerName }}</h6>
       <form class="renaming" @submit.prevent v-else>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          v-model="cloneNameColumn"
-        />
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          @click="startStopRenameColumn"
-        ></button>
-        <button
-          class="btn btn-sm btn-primary"
-          type="submit"
-          @click="renameColumn"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-check-circle"
-            viewBox="0 0 16 16"
-          >
+        <input type="text" class="form-control form-control-sm" v-model="cloneNameColumn" />
+        <button type="button" class="btn-close" aria-label="Close" @click="startStopRenameColumn"></button>
+        <button class="btn btn-sm btn-primary" type="submit" @click="renameColumn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle"
+            viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
             <path
-              d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-            />
-            <path
-              d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"
-            />
+              d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
           </svg>
         </button>
       </form>
       <div class="dropdown" v-if="!renamingColumn">
-        <threeDotBtn
-          size="mini"
-          class=""
-          id="dropdownMenuButton1"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        />
+        <threeDotBtn size="mini" class="" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" />
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
           <li>
-            <button
-              type="button"
-              class="dropdown-item"
-              @click="startStopRenameColumn"
-            >
+            <button type="button" class="dropdown-item" @click="startStopRenameColumn">
               Переименовать колонку
             </button>
           </li>
           <li>
-            <button
-              type="button"
-              class="dropdown-item"
-              @click="tasksStore.confirmationOfDeletingFunction(column.id)"
-            >
+            <button type="button" class="dropdown-item" @click="tasksStore.confirmationOfDeletingFunction(column.id)">
               Удалить колонку
             </button>
           </li>
@@ -169,38 +147,21 @@ export default {
     </header>
 
     <ul class="column__list">
-      <Task v-for="task in column.tasks" :task="task" draggable="true" @dragstart="startDrag($event, task)" @drop="onDrop($event)"/>
+      <Task v-for="task in column.tasks" :task="task" :coordinats="task.id == taskIdForDrugging ? coordinats : null"
+        draggable="true"  @dragstart="startDrag($event, task)"  />
     </ul>
 
-    <button
-      class="column__add-btn btn btn-sm"
-      @click="startStopCreationTask"
-      v-if="!creationTask"
-    >
+    <button class="column__add-btn btn btn-sm" @click="startStopCreationTask" v-if="!creationTask">
       Добавить задачу
     </button>
     <form class="column__creation-task" v-else>
-      <textarea
-        @keyup.enter="createTask"
-        class="form-control form-control-sm"
-        :class="invalidInput ? 'is-invalid' : ''"
-        v-model="taskName"
-        placeholder="Введите заголовок задачи"
-      ></textarea>
+      <textarea @keyup.enter="createTask" class="form-control form-control-sm" :class="invalidInput ? 'is-invalid' : ''"
+        v-model="taskName" placeholder="Введите заголовок задачи"></textarea>
       <div class="buttons">
-        <button
-          class="btn btn-sm btn-primary"
-          type="submit"
-          @click="createTask"
-        >
+        <button class="btn btn-sm btn-primary" type="submit" @click="createTask">
           Создать задачу
         </button>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          @click="startStopCreationTask"
-        ></button>
+        <button type="button" class="btn-close" aria-label="Close" @click="startStopCreationTask"></button>
       </div>
     </form>
   </div>

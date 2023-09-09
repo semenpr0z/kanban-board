@@ -7,7 +7,11 @@ export default {
     return {
       creatingColumn: false,
       headerName: '',
-      invalidInput: false
+      invalidInput: false,
+      mouseCoordinats: {
+        posX: 0,
+        posY: 0,
+      }
     }
   },
   components: {
@@ -37,6 +41,16 @@ export default {
         this.invalidInput = false;
         this.headerName = '';
       }
+    },
+    handleDragOver(event) {
+      event.preventDefault();
+
+      const boardElement = document.querySelector('.board'); // Получаем элемент задачи
+      const rect = boardElement.getBoundingClientRect(); // Получаем его координаты
+
+
+      this.mouseCoordinats.posX = event.clientX - rect.left;
+      this.mouseCoordinats.posY = event.clientY - rect.top;
     }
   },
   watch: {
@@ -48,8 +62,9 @@ export default {
 </script>
 
 <template>
-  <ul class="board rounded">
-    <Column v-for="column in tasksStore.profileTasks" :column="column" :idColumn="column.id" :key="column.id"/>
+  <ul class="board rounded" @dragover="handleDragOver">
+    <Column v-for="column in tasksStore.profileTasks" :column="column" :idColumn="column.id" :key="column.id"
+      :coordinats="mouseCoordinats" />
     <div class="rounded board__add-column" :class="creatingColumn ? 'opened' : ''">
       <span class="not-activated" v-if="!creatingColumn" @click="startStopCreationColumn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
@@ -80,6 +95,7 @@ export default {
   overflow-y: auto;
   gap: 12px;
   height: 100%;
+  position: relative;
 
   &__add-column {
     cursor: pointer;
@@ -120,8 +136,7 @@ export default {
     cursor: default;
     height: 99px;
 
-    &:hover {
-    }
+    &:hover {}
   }
 }
 </style>

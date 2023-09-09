@@ -8,13 +8,17 @@ export default {
                 text: '',
                 id: 0
             }
+        },
+        coordinats: {
+            type: Object,
+            default: null
         }
     }
 }
 </script>
 
 <template>
-    <li class="task rounded shadow-sm" :title="'Задача: ' + task.name" >
+    <li class="task rounded shadow-sm" :title="'Задача: ' + task.name" :style="coordinats ? 'position: absolute; left:' + coordinats.posX + 'px; top:' + coordinats.posY + 'px;' : ''">
         <div class="task__header">
             <span>{{ task.name }}</span>
             <button class="btn task__btn-change" title="Изменить">
