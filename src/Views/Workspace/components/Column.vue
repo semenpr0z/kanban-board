@@ -3,6 +3,8 @@ import Task from "./Task.vue";
 import threeDotBtn from "@/components/UI/threeDotsBtn.vue";
 import Modal from "@/components/UI/Modal.vue";
 
+import draggable from "vuedraggable";
+
 import { useTasksStore } from "@/stores/tasksStore.js";
 
 export default {
@@ -15,16 +17,16 @@ export default {
       renamingColumn: false,
       cloneNameColumn: "",
       taskIdForDrugging: null,
-      taskCoordinats: {
-        posX: 0,
-        posY: 0,
-      }
+      columnWillIncrease: false,
+      isDragging: false,
+
     };
   },
   components: {
     Task,
     threeDotBtn,
     Modal,
+    draggable
   },
   props: {
     column: {
@@ -79,28 +81,10 @@ export default {
         this.startStopRenameColumn();
       }
     },
-    startDrag(event, item) {
-      event.dataTransfer.dropEffect = 'move';
-      event.dataTransfer.effectAllowed = 'move';
-      this.taskIdForDrugging = item.id
-      
-
-      this.tasksStore.startDragAndDropTask(item, this.column.id)
-
-    },
-    onDrop(event) {
-      event.preventDefault()
-      const itemReceived = this.tasksStore.draggableTask
-      this.tasksStore.endDragAndDropTask(this.column.id)
-      // console.log(itemReceived)
-      // console.log(this.column.id)
-
-    },
-    dragOver(event) {
-      event.preventDefault()
-      // console.log('я над элементом')
-
-    },
+    changeTasks() {
+      // console.log(this.tasksStore.profileTasks)
+      this.tasksStore.saveTasksToCache();
+    }
   },
   watch: {
     taskName() {
@@ -110,143 +94,181 @@ export default {
       this.invalidInput = false;
     },
   },
+  emits: [
+    'start-watching-coordinats'
+  ]
 };
 </script>
 
 <template>
-  <div class="column rounded shadow-sm" @dragover="dragOver" @drop="onDrop($event)">
-    <header class="column__header">
-      <h6 v-if="!renamingColumn">{{ column.headerName }}</h6>
-      <form class="renaming" @submit.prevent v-else>
-        <input type="text" class="form-control form-control-sm" v-model="cloneNameColumn" />
-        <button type="button" class="btn-close" aria-label="Close" @click="startStopRenameColumn"></button>
-        <button class="btn btn-sm btn-primary" type="submit" @click="renameColumn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle"
-            viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            <path
-              d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-          </svg>
-        </button>
+  <div class="wrapper">
+    <div class="draggable-space" v-if="tasksStore.draggableTask" @dragover="dragOver" @drop="onDrop($event)"
+      @dragenter="dragEnter" @dragleave="dragLeave">
+
+    </div>
+    <div class="column rounded shadow-sm">
+      <header class="column__header">
+        <h6 v-if="!renamingColumn">{{ column.headerName }}</h6>
+        <form class="renaming" @submit.prevent v-else>
+          <input type="text" class="form-control form-control-sm" v-model="cloneNameColumn" />
+          <button type="button" class="btn-close" aria-label="Close" @click="startStopRenameColumn"></button>
+          <button class="btn btn-sm btn-primary" type="submit" @click="renameColumn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle"
+              viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+              <path
+                d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+          </button>
+        </form>
+        <div class="dropdown" v-if="!renamingColumn">
+          <threeDotBtn size="mini" class="" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" />
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <button type="button" class="dropdown-item" @click="startStopRenameColumn">
+                Переименовать колонку
+              </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item" @click="tasksStore.confirmationOfDeletingFunction(column.id)">
+                Удалить колонку
+              </button>
+            </li>
+          </ul>
+        </div>
+      </header>
+      <main>
+        <!-- <ul class="column__list"> -->
+        <!-- <slot></slot> -->
+        <draggable tag="ul" :list="column.tasks" group="people" @change="changeTasks" itemKey="name" class="column__list">
+          <template #item="{ element, index }">
+            <Task :task="element" :key="index" />
+          </template>
+
+        </draggable>
+        <!-- </ul> -->
+      </main>
+
+
+      <!-- <Task v-for="task in column.tasks" :task="task" draggable="true" @dragstart="startDrag($event, task)" />
+        <li v-if="columnWillIncrease" class="virtual-task rounded shadow-sm">
+
+        </li> -->
+
+
+
+      <button class="column__add-btn btn btn-sm" @click="startStopCreationTask" v-if="!creationTask">
+        Добавить задачу
+      </button>
+      <form class="column__creation-task" v-else>
+        <textarea @keyup.enter="createTask" class="form-control form-control-sm" :class="invalidInput ? 'is-invalid' : ''"
+          v-model="taskName" placeholder="Введите заголовок задачи"></textarea>
+        <div class="buttons">
+          <button class="btn btn-sm btn-primary" type="submit" @click="createTask">
+            Создать задачу
+          </button>
+          <button type="button" class="btn-close" aria-label="Close" @click="startStopCreationTask"></button>
+        </div>
       </form>
-      <div class="dropdown" v-if="!renamingColumn">
-        <threeDotBtn size="mini" class="" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" />
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <li>
-            <button type="button" class="dropdown-item" @click="startStopRenameColumn">
-              Переименовать колонку
-            </button>
-          </li>
-          <li>
-            <button type="button" class="dropdown-item" @click="tasksStore.confirmationOfDeletingFunction(column.id)">
-              Удалить колонку
-            </button>
-          </li>
-        </ul>
-      </div>
-    </header>
-
-    <ul class="column__list">
-      <Task v-for="task in column.tasks" :task="task" :coordinats="task.id == taskIdForDrugging ? coordinats : null"
-        draggable="true"  @dragstart="startDrag($event, task)"  />
-    </ul>
-
-    <button class="column__add-btn btn btn-sm" @click="startStopCreationTask" v-if="!creationTask">
-      Добавить задачу
-    </button>
-    <form class="column__creation-task" v-else>
-      <textarea @keyup.enter="createTask" class="form-control form-control-sm" :class="invalidInput ? 'is-invalid' : ''"
-        v-model="taskName" placeholder="Введите заголовок задачи"></textarea>
-      <div class="buttons">
-        <button class="btn btn-sm btn-primary" type="submit" @click="createTask">
-          Создать задачу
-        </button>
-        <button type="button" class="btn-close" aria-label="Close" @click="startStopCreationTask"></button>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.column {
-  min-width: 250px;
-  max-width: 250px;
-  max-height: 100%;
-  height: max-content;
-  background-color: var(--columnColor);
-  color: var(--textColor);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
+.wrapper {
+  position: relative;
 
-  &__header {
+  .draggable-space {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+
+  .column {
+    min-width: 250px;
+    max-width: 250px;
+    max-height: 100%;
+    height: max-content;
+    background-color: var(--columnColor);
+    color: var(--textColor);
+    padding: 10px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 0 5px;
-    height: 30px;
-    position: relative;
+    flex-direction: column;
 
-    h5 {
-      margin: 0;
-    }
-
-    .renaming {
+    &__header {
       display: flex;
-      gap: 5px;
-      width: 100%;
+      justify-content: space-between;
       align-items: center;
-      padding: 0 5px;
-      margin-bottom: 5px;
+      padding: 0 0 5px;
+      height: 30px;
+      position: relative;
 
-      input {
-        width: 70%;
+      h5 {
+        margin: 0;
       }
 
-      .btn {
+      .renaming {
+        display: flex;
+        gap: 5px;
+        width: 100%;
+        align-items: center;
+        padding: 0 5px;
+        margin-bottom: 5px;
+
+        input {
+          width: 70%;
+        }
+
+        .btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+
+    &__list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 5px;
+      gap: 5px;
+      flex-grow: 1;
+      /* Занимает всё доступное вертикальное пространство */
+      overflow-y: auto;
+      /* Добавляем вертикальные полосы прокрутки, если содержимое превышает доступное пространство */
+
+      .virtual-task {
+        padding: 10px;
+        background-color: var(--transparentHover);
+      }
+    }
+
+    &__add-btn {
+      margin-top: 10px;
+      text-align: left;
+      width: fit-content;
+      color: var(--textColor);
+
+      &:hover {
+        background-color: var(--transparentHover);
+      }
+    }
+
+    &__creation-task {
+      margin-top: 10px;
+      display: flex;
+      gap: 5px;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 5px;
+
+      .buttons {
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 5px;
       }
-    }
-  }
-
-  &__list {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 0 5px;
-    gap: 5px;
-    flex-grow: 1;
-    /* Занимает всё доступное вертикальное пространство */
-    overflow-y: auto;
-    /* Добавляем вертикальные полосы прокрутки, если содержимое превышает доступное пространство */
-  }
-
-  &__add-btn {
-    margin-top: 10px;
-    text-align: left;
-    width: fit-content;
-    color: var(--textColor);
-
-    &:hover {
-      background-color: var(--transparentHover);
-    }
-  }
-
-  &__creation-task {
-    margin-top: 10px;
-    display: flex;
-    gap: 5px;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 5px;
-
-    .buttons {
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
   }
 }

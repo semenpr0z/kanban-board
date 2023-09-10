@@ -5,7 +5,7 @@ import Profile from "@/Views/Profile/Profile.vue";
 import Page404 from "@/Views/Page404/Page404.vue";
 import Auth from "@/Views/Auth/AuthPage.vue";
 import Settings from "@/Views/Settings/Settings.vue";
-// import Translater from '@/Views/Translater/Translater.vue'
+import TestPage from '@/Views/TestPage/TestPage.vue'
 import { useUserStore } from "@/stores/userStore.js";
 
 const router = createRouter({
@@ -61,11 +61,12 @@ const router = createRouter({
       component: Settings,
       meta: { showInNav: false },
     },
-    // {
-    //   path: '/translate',
-    //   name: 'translater',
-    //   component: Translater
-    // }
+    {
+      path: '/testpage',
+      name: 'Тесты',
+      component: TestPage,
+      meta: { showInNav: true },
+    }
   ],
 });
 

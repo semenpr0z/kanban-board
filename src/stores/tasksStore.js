@@ -80,48 +80,9 @@ export const useTasksStore = defineStore("tasksStore", {
         }
       }
     },
-    startDragAndDropTask(item, columnId) {
-      this.draggableTask = item;
-      this.columnIdForDrug = columnId;
-    },
-    endDragAndDropTask(newColumnId) {
-      // Проверяем, что есть перетаскиваемая задача и что старая колонка и новая колонка существуют
-      if (this.draggableTask && this.columnIdForDrug && newColumnId) {
-        // Находим старую колонку
-        const oldColumn = this.profileTasks.find(
-          (column) => column.id === this.columnIdForDrug
-        );
-
-        // Находим новую колонку
-        const newColumn = this.profileTasks.find(
-          (column) => column.id === newColumnId
-        );
-
-        // Если старая и новая колонки существуют
-        if (oldColumn && newColumn) {
-          // Находим индекс перетаскиваемой задачи в старой колонке
-          const taskIndex = oldColumn.tasks.findIndex(
-            (task) => task.id === this.draggableTask.id
-          );
-
-          // Если задача найдена в старой колонке
-          if (taskIndex !== -1) {
-            // Удаляем задачу из старой колонки
-            const movedTask = oldColumn.tasks.splice(taskIndex, 1)[0];
-
-            // Добавляем задачу в новую колонку
-            newColumn.tasks.push(movedTask);
-
-            // Сбрасываем значения переменных
-            this.draggableTask = null;
-            this.columnIdForDrug = null;
-
-            // Сохраняем изменения в кэше
-            saveToCache(this.profileTasks);
-          }
-        }
-      }
-    },
+    saveTasksToCache(){
+      saveToCache(this.profileTasks)
+    }
   },
 });
 

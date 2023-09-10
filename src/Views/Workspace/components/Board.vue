@@ -1,6 +1,8 @@
 <script>
 import Column from "./Column.vue";
+import Task from "./Task.vue";
 import { useTasksStore } from "@/stores/tasksStore.js";
+import draggable from "vuedraggable";
 
 export default {
   data() {
@@ -8,14 +10,10 @@ export default {
       creatingColumn: false,
       headerName: '',
       invalidInput: false,
-      mouseCoordinats: {
-        posX: 0,
-        posY: 0,
-      }
     }
   },
   components: {
-    Column,
+    Column, Task, draggable
   },
   setup() {
     const tasksStore = useTasksStore();
@@ -51,7 +49,8 @@ export default {
 
       this.mouseCoordinats.posX = event.clientX - rect.left;
       this.mouseCoordinats.posY = event.clientY - rect.top;
-    }
+    },
+
   },
   watch: {
     headerName() {
@@ -62,9 +61,8 @@ export default {
 </script>
 
 <template>
-  <ul class="board rounded" @dragover="handleDragOver">
-    <Column v-for="column in tasksStore.profileTasks" :column="column" :idColumn="column.id" :key="column.id"
-      :coordinats="mouseCoordinats" />
+  <ul class="board rounded">
+    <Column v-for="(column, index) in tasksStore.profileTasks" :column="column" :idColumn="column.id" :key="column.id" />
     <div class="rounded board__add-column" :class="creatingColumn ? 'opened' : ''">
       <span class="not-activated" v-if="!creatingColumn" @click="startStopCreationColumn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
