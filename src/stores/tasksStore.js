@@ -19,6 +19,7 @@ export const useTasksStore = defineStore("tasksStore", {
     idOfColumnForDelete: "",
     draggableTask: null,
     columnIdForDrug: null,
+    workSpaceName: 'Рабочее пространство'
   }),
   actions: {
     createTask(columnId, taskName) {
@@ -81,6 +82,14 @@ export const useTasksStore = defineStore("tasksStore", {
       }
     },
     saveTasksToCache(){
+      saveToCache(this.profileTasks)
+    },
+    renameWorkSpace(newWorkSpaceName){
+      this.workSpaceName = newWorkSpaceName;
+    },
+    cleanWorkspace(){
+      this.profileTasks = [];
+      this.workSpaceName = 'Рабочее пространство'
       saveToCache(this.profileTasks)
     }
   },

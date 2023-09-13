@@ -37,6 +37,9 @@ export default {
         },
         log: function (evt) {
             window.console.log(evt);
+        },
+        logging(){
+            console.log('added')
         }
     }
 };
@@ -46,7 +49,7 @@ export default {
     <div class="row">
         <div class="col-3">
             <h3>Draggable 1</h3>
-            <draggable class="list-group" :list="list1" group="people" @change="log" itemKey="name">
+            <draggable class="list-group" :list="list1" group="people" @change="log" @start="logging" itemKey="name">
                 <template #item="{ element, index }">
                     <div class="list-group-item">{{ element.name }} {{ index }}</div>
                 </template>
@@ -80,5 +83,9 @@ export default {
     border-radius: 5px;
     background: #f44336;
     display: inline-block;
+}
+
+.list-group-item{
+    width: max-content;
 }
 </style>
