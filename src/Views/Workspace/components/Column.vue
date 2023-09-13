@@ -36,10 +36,6 @@ export default {
         tasks: [],
       },
     },
-    // idColumn: {
-    //   type: String,
-    //   required: true,
-    // },
     coordinats: {
       type: Object,
       required: false,
@@ -103,63 +99,27 @@ export default {
       <header class="column__header">
         <h6 v-if="!renamingColumn">{{ column.headerName }}</h6>
         <form class="renaming" @submit.prevent v-else>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            v-model="cloneNameColumn"
-          />
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="startStopRenameColumn"
-          ></button>
-          <button
-            class="btn btn-sm btn-primary"
-            type="submit"
-            @click="renameColumn"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-check-circle"
-              viewBox="0 0 16 16"
-            >
+          <input type="text" class="form-control form-control-sm" v-model="cloneNameColumn" />
+          <button type="button" class="btn-close" aria-label="Close" @click="startStopRenameColumn"></button>
+          <button class="btn btn-sm btn-primary" type="submit" @click="renameColumn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle"
+              viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
               <path
-                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-              />
-              <path
-                d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"
-              />
+                d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
             </svg>
           </button>
         </form>
         <div class="dropdown" v-if="!renamingColumn">
-          <threeDotBtn
-            size="mini"
-            class=""
-            id="dropdownMenuButton1"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          />
+          <threeDotBtn size="mini" class="" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" />
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li>
-              <button
-                type="button"
-                class="dropdown-item"
-                @click="startStopRenameColumn"
-              >
+              <button type="button" class="dropdown-item" @click="startStopRenameColumn">
                 Переименовать колонку
               </button>
             </li>
             <li>
-              <button
-                type="button"
-                class="dropdown-item"
-                @click="tasksStore.confirmationOfDeletingFunction(column.id)"
-              >
+              <button type="button" class="dropdown-item" @click="tasksStore.confirmationOfDeletingFunction(column.id)">
                 Удалить колонку
               </button>
             </li>
@@ -167,49 +127,24 @@ export default {
         </div>
       </header>
       <main>
-        <draggable
-          tag="ul"
-          :list="column.tasks"
-          group="tasks"
-          @change="changeTasks"
-          itemKey="task"
-          class="column__list"
-        >
+        <draggable tag="ul" :list="column.tasks" group="tasks" @change="changeTasks" itemKey="task" class="column__list">
           <template #item="{ element, index }">
             <Task :task="element" :key="index" />
           </template>
         </draggable>
       </main>
 
-      <button
-        class="column__add-btn btn btn-sm"
-        @click="startStopCreationTask"
-        v-if="!creationTask"
-      >
+      <button class="column__add-btn btn btn-sm" @click="startStopCreationTask" v-if="!creationTask">
         Добавить задачу
       </button>
       <form class="column__creation-task" v-else>
-        <textarea
-          @keyup.enter="createTask"
-          class="form-control form-control-sm"
-          :class="invalidInput ? 'is-invalid' : ''"
-          v-model="taskName"
-          placeholder="Введите заголовок задачи"
-        ></textarea>
+        <textarea @keyup.enter="createTask" class="form-control form-control-sm" :class="invalidInput ? 'is-invalid' : ''"
+          v-model="taskName" placeholder="Введите заголовок задачи"></textarea>
         <div class="buttons">
-          <button
-            class="btn btn-sm btn-primary"
-            type="submit"
-            @click="createTask"
-          >
+          <button class="btn btn-sm btn-primary" type="submit" @click="createTask">
             Создать задачу
           </button>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="startStopCreationTask"
-          ></button>
+          <button type="button" class="btn-close" aria-label="Close" @click="startStopCreationTask"></button>
         </div>
       </form>
     </div>
@@ -217,7 +152,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
 .wrapper {
   position: relative;
 

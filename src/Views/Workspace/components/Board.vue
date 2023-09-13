@@ -51,7 +51,7 @@ export default {
       this.mouseCoordinats.posX = event.clientX - rect.left;
       this.mouseCoordinats.posY = event.clientY - rect.top;
     },
-    changeTasks() {},
+    changeTasks() { },
   },
   watch: {
     headerName() {
@@ -62,60 +62,29 @@ export default {
 </script>
 
 <template>
-  <div class="board rounded">
-    <draggable
-      tag="ul"
-      :list="tasksStore.profileTasks"
-      group="columns"
-      @change="changeTasks"
-      itemKey="column"
-      class="list rounded"
-    >
+  <div class="board rounded" v-for="board in tasksStore.profileTasks">
+    <draggable tag="ul" :list="board.columns" group="columns" @change="changeTasks" itemKey="column" class="list rounded">
       <template #item="{ element, index }">
         <Column :column="element" />
       </template>
     </draggable>
-    <div
-      class="rounded board__add-column"
-      :class="creatingColumn ? 'opened' : ''"
-    >
-      <span
-        class="not-activated"
-        v-if="!creatingColumn"
-        @click="startStopCreationColumn"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="bi bi-plus"
-          viewBox="0 0 16 16"
-        >
+    <div class="rounded board__add-column" :class="creatingColumn ? 'opened' : ''">
+      <span class="not-activated" v-if="!creatingColumn" @click="startStopCreationColumn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
+          viewBox="0 0 16 16">
           <path
-            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
-          />
+            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
         </svg>
         Добавить колонку
       </span>
       <form class="activated" v-else>
-        <input
-          type="text"
-          class="form-control"
-          :class="invalidInput ? 'is-invalid' : ''"
-          placeholder="Назовите колонку"
-          v-model="headerName"
-        />
+        <input type="text" class="form-control" :class="invalidInput ? 'is-invalid' : ''" placeholder="Назовите колонку"
+          v-model="headerName" />
         <div class="buttons">
           <button class="btn btn-sm btn-primary" @click="createColumn">
             Создать колонку
           </button>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="startStopCreationColumn"
-          ></button>
+          <button type="button" class="btn-close" aria-label="Close" @click="startStopCreationColumn"></button>
         </div>
       </form>
     </div>
@@ -131,7 +100,7 @@ export default {
   height: 100%;
   position: relative;
 
-  .list{
+  .list {
     display: flex;
     gap: 12px;
     list-style: none;
@@ -176,8 +145,7 @@ export default {
     cursor: default;
     height: 99px;
 
-    &:hover {
-    }
+    &:hover {}
   }
 }
 </style>

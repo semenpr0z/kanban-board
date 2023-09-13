@@ -4,7 +4,21 @@ import { v4 as uuidv4 } from "uuid";
 // Загрузка данных из кэша
 function loadFromCache() {
   const cachedData = localStorage.getItem("profileTasks");
-  return cachedData ? JSON.parse(cachedData) : [];
+  return cachedData
+    ? JSON.parse(cachedData)
+    : [
+        {
+          workSpaceName: "Личное рабочее пространство",
+          columns: [
+            {
+              headerName: "1 этап",
+              id: uuidv4(),
+              tasks: [{ name: "Задача 1", text: "", id: uuidv4() }],
+            },
+          ],
+          id: uuidv4(),
+        },
+      ];
 }
 
 // Сохранение данных в кэш
@@ -19,7 +33,7 @@ export const useTasksStore = defineStore("tasksStore", {
     idOfColumnForDelete: "",
     draggableTask: null,
     columnIdForDrug: null,
-    workSpaceName: 'Рабочее пространство'
+    workSpaceName: "Рабочее пространство",
   }),
   actions: {
     createTask(columnId, taskName) {
@@ -81,17 +95,17 @@ export const useTasksStore = defineStore("tasksStore", {
         }
       }
     },
-    saveTasksToCache(){
-      saveToCache(this.profileTasks)
+    saveTasksToCache() {
+      saveToCache(this.profileTasks);
     },
-    renameWorkSpace(newWorkSpaceName){
+    renameWorkSpace(newWorkSpaceName) {
       this.workSpaceName = newWorkSpaceName;
     },
-    cleanWorkspace(){
+    cleanWorkspace() {
       this.profileTasks = [];
-      this.workSpaceName = 'Рабочее пространство'
-      saveToCache(this.profileTasks)
-    }
+      this.workSpaceName = "Рабочее пространство";
+      saveToCache(this.profileTasks);
+    },
   },
 });
 
