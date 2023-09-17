@@ -10,6 +10,7 @@ export default {
       creatingColumn: false,
       headerName: "",
       invalidInput: false,
+      currentBoard: ''
     };
   },
   components: {
@@ -30,13 +31,13 @@ export default {
       this.creatingColumn = !this.creatingColumn;
       this.invalidInput = false;
     },
-    createColumn(e) {
-      e.preventDefault();
+    createColumn(id) {
+      
 
       if (!this.headerName.length) {
         this.invalidInput = true;
       } else {
-        this.tasksStore.createColumn(this.headerName);
+        this.tasksStore.createColumn(id, this.headerName);
         this.startStopCreationColumn();
         this.invalidInput = false;
         this.headerName = "";
@@ -65,11 +66,11 @@ export default {
   <div class="board rounded" v-for="board in tasksStore.profileTasks">
     <draggable tag="ul" :list="board.columns" group="columns" @change="changeTasks" itemKey="column" class="list rounded">
       <template #item="{ element, index }">
-        <Column :column="element" />
+        <Column :column="element" :workspace-id="board.id"/>
       </template>
     </draggable>
     <div class="rounded board__add-column" :class="creatingColumn ? 'opened' : ''">
-      <span class="not-activated" v-if="!creatingColumn" @click="startStopCreationColumn">
+      <span class="not-activated" v-if="!creatingColumn" @click="startStopCreationColumn()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
           viewBox="0 0 16 16">
           <path
@@ -77,11 +78,11 @@ export default {
         </svg>
         Добавить колонку
       </span>
-      <form class="activated" v-else>
+      <form class="activated" @submit.prevent="createColumn(board.id)"  v-else>
         <input type="text" class="form-control" :class="invalidInput ? 'is-invalid' : ''" placeholder="Назовите колонку"
           v-model="headerName" />
         <div class="buttons">
-          <button class="btn btn-sm btn-primary" @click="createColumn">
+          <button type="submit" class="btn btn-sm btn-primary" >
             Создать колонку
           </button>
           <button type="button" class="btn-close" aria-label="Close" @click="startStopCreationColumn"></button>

@@ -36,10 +36,10 @@ export default {
         tasks: [],
       },
     },
-    coordinats: {
-      type: Object,
-      required: false,
-    },
+    workspaceId: {
+      type: String,
+      required: true
+    }
   },
   setup() {
     const tasksStore = useTasksStore();
@@ -57,8 +57,9 @@ export default {
       if (!this.taskName.length) {
         this.invalidInput = true;
       } else {
-        this.tasksStore.createTask(this.column.id, this.taskName);
+        this.tasksStore.createTask(this.workspaceId, this.column.id, this.taskName);
         this.startStopCreationTask();
+        this.taskName = ''
       }
     },
     startStopRenameColumn() {
@@ -66,13 +67,12 @@ export default {
       this.renamingColumn = !this.renamingColumn;
       console.log(this.cloneNameColumn);
     },
-    renameColumn(e) {
-      e.preventDefault();
+    renameColumn() {
       console.log(!this.cloneNameColumn.length);
       if (!this.cloneNameColumn.length) {
         this.invalidInput = true;
       } else {
-        this.tasksStore.renameColumn(this.column.id, this.cloneNameColumn);
+        this.tasksStore.renameColumn(this.workspaceId, this.column.id, this.cloneNameColumn);
         this.startStopRenameColumn();
       }
     },
@@ -98,10 +98,10 @@ export default {
     <div class="column rounded shadow-sm">
       <header class="column__header">
         <h6 v-if="!renamingColumn">{{ column.headerName }}</h6>
-        <form class="renaming" @submit.prevent v-else>
+        <form class="renaming" @submit.prevent="renameColumn" v-else>
           <input type="text" class="form-control form-control-sm" v-model="cloneNameColumn" />
           <button type="button" class="btn-close" aria-label="Close" @click="startStopRenameColumn"></button>
-          <button class="btn btn-sm btn-primary" type="submit" @click="renameColumn">
+          <button class="btn btn-sm btn-primary" type="submit" >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle"
               viewBox="0 0 16 16">
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -119,7 +119,7 @@ export default {
               </button>
             </li>
             <li>
-              <button type="button" class="dropdown-item" @click="tasksStore.confirmationOfDeletingFunction(column.id)">
+              <button type="button" class="dropdown-item" @click="tasksStore.confirmationOfDeletingFunction(workspaceId, column.id)">
                 Удалить колонку
               </button>
             </li>
@@ -137,7 +137,7 @@ export default {
       <button class="column__add-btn btn btn-sm" @click="startStopCreationTask" v-if="!creationTask">
         Добавить задачу
       </button>
-      <form class="column__creation-task" v-else>
+      <form class="column__creation-task"  v-else>
         <textarea @keyup.enter="createTask" class="form-control form-control-sm" :class="invalidInput ? 'is-invalid' : ''"
           v-model="taskName" placeholder="Введите заголовок задачи"></textarea>
         <div class="buttons">

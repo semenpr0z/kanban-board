@@ -24,8 +24,7 @@ export default {
       this.cloneNameWorkSpace = this.tasksStore.workSpaceName;
       this.renamingWorkSpace = !this.renamingWorkSpace;
     },
-    renameWorkSpace(e) {
-      e.preventDefault();
+    renameWorkSpace() {
       if (!this.cloneNameWorkSpace.length) {
         this.invalidInput = true;
       } else {
@@ -52,7 +51,7 @@ export default {
   <div class="workspace">
     <div class="workspace__top">
       <h1 v-if="!renamingWorkSpace">{{ tasksStore.workSpaceName }}</h1>
-      <form class="renaming" @submit.prevent v-else>
+      <form class="renaming" @submit.prevent="renameWorkSpace" v-else>
         <input
           type="text"
           class="form-control form-control-lg"
@@ -67,7 +66,6 @@ export default {
         <button
           class="btn  btn-primary"
           type="submit"
-          @click="renameWorkSpace"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
